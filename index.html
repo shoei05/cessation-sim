@@ -80,6 +80,8 @@ html.embed footer{display:none}
  .card{padding:16px 16px;border-radius:12px;max-height:calc(100dvh - 24px)}.card h2{font-size:21.8px}.card img.hero{height:150px}.rep img.hero{height:120px}
  .goodcount .big{font-size:40px}.rep table{font-size:14.4px}.turns td{font-size:14.4px}.alt,.adv{font-size:13.8px}
 }
+.speaking .skipbtn{margin:0 0 0 10px;padding:4px 14px;min-height:36px;font-size:15px;line-height:1.4;font-weight:700;background:#fff;color:var(--accent);border:1px solid var(--accent);border-radius:8px;text-align:center}
+.slidelink{margin:18px 0 6px;padding:14px 18px;border-radius:12px;background:#f6f3ee}.slidelink b{display:block;margin-bottom:4px}.slidelink a{color:var(--accent);font-weight:700}
 </style></head><body>
 <header><h1 id="h-title">禁煙外来 動機づけ面接シミュレーター</h1><div class="sub">返答を選ぶと、患者さんが声で答えます</div></header>
 <main>
@@ -112,10 +114,10 @@ let AU=null;function unlockAudio(){if(AU)return;AU=new Audio();AU.playsInline=tr
 // 音声は audio/manifest.json にあるファイルだけを鳴らす。まだ作っていない音声は、表示だけ短く出して先へ進む
 const au=f=>AV[f]?`audio/${f}?v=${(AV[f].md5||'').slice(0,12)}`:null;
 function play(file,label){return new Promise(res=>{const src=au(file);window.__clips.push({file,src,t:(performance.now()-T0)/1000});
- const sp=add('speaking',`<span class="wave"><i></i><i></i><i></i><i></i><i></i></span>${esc(label)}`);
+ const sp=add('speaking',`<span class="wave"><i></i><i></i><i></i><i></i><i></i></span>${esc(label)}<button type="button" class="skipbtn">音声を飛ばす</button>`);
  if(!src){setTimeout(()=>{sp.remove();res()},DEMO?300:700);return}
  unlockAudio();const a=AU;let done=false;const fin=ms=>{if(done)return;done=true;a.onended=null;a.onerror=null;setTimeout(()=>{sp.remove();res()},ms)};
- a.onended=()=>fin(0);a.onerror=()=>fin(800);a.src=src;a.play().catch(()=>fin(800))})}
+ a.onended=()=>fin(0);a.onerror=()=>fin(800);sp.querySelector('.skipbtn').onclick=()=>{try{a.pause()}catch(e){}fin(0)};a.src=src;a.play().catch(()=>fin(800))})}
 // 患者の発言: 【様子】（外から見える行動。音声にはしない）を先に出し、音声の後に台詞を出す
 async function patientSay(file,text,manner){const row=add('row p',`<img class="mini" src="${mood()}" alt=""><div class="pcol">${manner?`<div class="manner">${esc(UI.manner_label||'【様子】')} ${esc(manner)}</div>`:''}</div>`);
  await play(file,UI.speaking_label);const d=document.createElement('div');d.className='msg p';d.textContent=text;row.querySelector('.pcol').appendChild(d);log.scrollTop=log.scrollHeight;sb()}
@@ -153,6 +155,7 @@ function report(id){const n=S.nodes[id],ek=n.end,g=goodN(),N=scenes().length;
  <p>${esc(S.feedback_voice[ek]||'')}</p>
  ${corrHtml}
  <h3>場面ごとの振り返り</h3><p class="small">${esc(UI.legend)}</p><table class="turns">${rows}</table>
+ <div class="slidelink"><b>講義スライド</b><p>今回の講義は島根大学医学部 臨床実習入門 特別プログラム（2026年11月13日）で行っています。講義の内容は、こちらからスライドで見ることができます。</p><p><a href="slides/" target="_blank" rel="noopener noreferrer">講義スライドを開く</a></p></div>
  <button class="fbbtn" id="again-voice">講評をもう一度聞く</button><button id="retry">もう一度</button></div>`;
  $('#overlay').style.display='grid';
  const say=()=>{const s=au(voice);window.__clips.push({file:voice,src:s,t:(performance.now()-T0)/1000});if(!s)return;unlockAudio();AU.onended=null;AU.onerror=null;AU.src=s;AU.play().catch(()=>{})};
