@@ -7,7 +7,5 @@
 - 最後に、7場面中の◎の数と、場面ごとの振り返りが出ます。同じ返答を選べば、何回やっても同じ結果になります。
 - 台詞と解説の根拠にした資料は [SOURCES.md](SOURCES.md) にあります。
 
-第1版（5場面）: https://shoei05.github.io/kinen-mi-simulator/
-
 ## 作成
 香田将英（東北大学大学院医学系研究科 公衆衛生学分野）。音声は Google Gemini 3.8 Flash TTS、イラストは Gemini 2.5 Flash Image で生成しました。
